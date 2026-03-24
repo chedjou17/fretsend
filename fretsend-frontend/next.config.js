@@ -10,6 +10,3 @@ const nextConfig = {
   },
 };
 module.exports = nextConfig;
-git add .
-git commit -m "fix: ignore build errors"
-git push
