@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+@layer base {
+  :root {
+    --blue:    #1C4AA6;
+    --cream:   #F2C49B;
+    --orange:  #F26E22;
+    --red-org: #F2561D;
+    --white:   #F2F2F2;
+  }
+  html  { scroll-behavior: smooth; }
+  body  { @apply bg-surface text-gray-900 antialiased; font-family: 'Inter', sans-serif; }
+  *     { box-sizing: border-box; }
+  ::-webkit-scrollbar       { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+}
+
+@layer components {
+  /* ── Buttons ─────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center gap-2 font-semibold rounded-xl
+           transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  .btn-primary {
+    @apply btn bg-primary-500 hover:bg-primary-600 text-white
+           px-5 py-2.5 focus:ring-primary-400 shadow-card;
+  }
+  .btn-orange {
+    @apply btn bg-accent-400 hover:bg-accent-500 text-white
+           px-5 py-2.5 focus:ring-accent-300 shadow-orange;
+  }
+  .btn-ghost {
+    @apply btn bg-white hover:bg-surface border border-surface-border
+           text-gray-700 px-5 py-2.5 focus:ring-gray-300;
+  }
+  .btn-danger {
+    @apply btn bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 focus:ring-red-500;
+  }
+  .btn-sm  { @apply px-3 py-1.5 text-sm !important; }
+  .btn-icon { @apply btn bg-white border border-surface-border text-gray-600 hover:bg-surface p-2 focus:ring-gray-300; }
+
+  /* ── Cards ───────────────────────────────────────────── */
+  .card       { @apply bg-white rounded-2xl border border-surface-border shadow-card; }
+  .card-hover { @apply card hover:shadow-hover transition-all duration-200 cursor-pointer; }
+
+  /* ── Forms ───────────────────────────────────────────── */
+  .label    { @apply block text-sm font-medium text-gray-700 mb-1.5; }
+  .input    { @apply w-full border border-surface-border rounded-xl px-4 py-2.5 text-sm bg-white
+                     focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent
+                     transition-all placeholder-gray-400; }
+  .select   { @apply input appearance-none; }
+  .textarea { @apply input resize-none; }
+
+  /* ── Badges ──────────────────────────────────────────── */
+  .badge { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+
+  /* ── Table ───────────────────────────────────────────── */
+  .th { @apply px-4 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider bg-surface-muted; }
+  .td { @apply px-4 py-3 text-sm text-gray-700 border-t border-surface-border; }
+
+  /* ── Sidebar nav ─────────────────────────────────────── */
+  .nav-link     { @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150; }
+  .nav-active   { @apply bg-primary-500 text-white shadow-sm; }
+  .nav-inactive { @apply text-gray-600 hover:bg-primary-50 hover:text-primary-600; }
+
+  /* ── KPI cards ───────────────────────────────────────── */
+  .kpi-card  { @apply card p-5 flex flex-col gap-3; }
+
+  /* ── Modal ───────────────────────────────────────────── */
+  .modal-overlay { @apply fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4; }
+  .modal-box     { @apply bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto; }
+
+  /* ── Tracking timeline ───────────────────────────────── */
+  .timeline-dot  { @apply w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0; }
+  .timeline-line { @apply w-0.5 flex-1 bg-gray-200 my-1 min-h-5; }
+
+  /* ── Spinner ─────────────────────────────────────────── */
+  .spinner { @apply w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin; }
+
+  /* ── Status colors ───────────────────────────────────── */
+  .status-created     { @apply bg-gray-100    text-gray-600; }
+  .status-processing  { @apply bg-blue-100    text-blue-700; }
+  .status-in_transit  { @apply bg-amber-100   text-amber-700; }
+  .status-at_customs  { @apply bg-orange-100  text-orange-700; }
+  .status-arrived_hub { @apply bg-purple-100  text-purple-700; }
+  .status-dispatched  { @apply bg-indigo-100  text-indigo-700; }
+  .status-available   { @apply bg-emerald-100 text-emerald-700; }
+  .status-delivered   { @apply bg-green-100   text-green-700; }
+  .status-returned    { @apply bg-red-100     text-red-700; }
+
+  /* ── Page layout helpers ─────────────────────────────── */
+  .page-title  { @apply text-2xl font-bold text-gray-900; }
+  .page-sub    { @apply text-sm text-gray-500 mt-0.5; }
+  .page-header { @apply flex items-start justify-between gap-4 flex-wrap mb-6; }
+
+  /* ── Section (landing) ───────────────────────────────── */
+  .section        { @apply py-20 px-4; }
+  .section-title  { @apply text-3xl md:text-4xl font-black text-gray-900 mb-4; }
+  .section-sub    { @apply text-lg text-gray-500 max-w-2xl; }
+}
+
+@layer utilities {
+  .animate-fade-up  { animation: fadeUp 0.6s ease-out both; }
+  .animate-slide-in { animation: slideIn 0.4s ease-out both; }
+  .text-brand-blue  { color: #1C4AA6; }
+  .text-brand-orange{ color: #F26E22; }
+  .bg-brand-blue    { background-color: #1C4AA6; }
+  .bg-brand-orange  { background-color: #F26E22; }
+  .border-brand     { border-color: #1C4AA6; }
+
+  /* Tracking progress */
+  .progress-track { @apply h-2 bg-gray-100 rounded-full overflow-hidden; }
+  .progress-bar   { @apply h-full bg-primary-500 rounded-full transition-all duration-700; }
+}
