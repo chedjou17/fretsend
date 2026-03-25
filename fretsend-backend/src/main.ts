@@ -23,6 +23,8 @@ async function bootstrap() {
       process.env.FRONTEND_URL || 'http://localhost:3000',
       'http://localhost:3000',
       'http://localhost:8081', // Expo mobile
+       'https://fretsend.vercel.app', // ✅ AJOUTE ÇA
+      
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
