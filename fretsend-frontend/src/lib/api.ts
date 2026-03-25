@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://fretsend.onrender.com';
 
 const api: AxiosInstance = axios.create({
   baseURL: BASE,
