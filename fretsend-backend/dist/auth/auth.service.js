@@ -129,14 +129,33 @@ let AuthService = AuthService_1 = class AuthService {
         }
     }
     async getMe(userId) {
-        const { data, error } = await this.db
+        const { data: profile, error: profileError } = await this.db
             .from('profiles')
-            .select('*, agency:agencies(id, name, city, country, phone, email)')
+            .select('*')
             .eq('id', userId)
             .single();
-        if (error)
+        if (profileError || !profile) {
+            this.logger.error(`GetMe: Profile not found for ${userId}`);
             throw new common_1.UnauthorizedException('Profil introuvable');
-        return data;
+        }
+        if (profile.is_active === false) {
+            throw new common_1.UnauthorizedException('Compte désactivé');
+        }
+        let agency = null;
+        if (profile.agency_id) {
+            const { data: agencyData, error: agencyError } = await this.db
+                .from('agencies')
+                .select('id, name, city, country, phone, email')
+                .eq('id', profile.agency_id)
+                .maybeSingle();
+            if (!agencyError) {
+                agency = agencyData;
+            }
+        }
+        return {
+            ...profile,
+            agency: agency
+        };
     }
     async logout(userId) {
         await this.db.auth.admin.signOut(userId);

@@ -155,16 +155,44 @@ async login(dto: LoginDto) {
   }
 
   // ── Profil connecté ───────────────────────────────────
-  async getMe(userId: string) {
-    const { data, error } = await this.db
-      .from('profiles')
-      .select('*, agency:agencies(id, name, city, country, phone, email)')
-      .eq('id', userId)
-      .single();
+async getMe(userId: string) {
+  // 1. Récupérer le profil seul d'abord
+  const { data: profile, error: profileError } = await this.db
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
 
-    if (error) throw new UnauthorizedException('Profil introuvable');
-    return data;
+  if (profileError || !profile) {
+    this.logger.error(`GetMe: Profile not found for ${userId}`);
+    throw new UnauthorizedException('Profil introuvable');
   }
+
+  // 2. Vérification du statut actif (important au refresh !)
+  if (profile.is_active === false) {
+    throw new UnauthorizedException('Compte désactivé');
+  }
+
+  // 3. Charger l'agence séparément (Logique identique au login)
+  let agency = null;
+  if (profile.agency_id) {
+    const { data: agencyData, error: agencyError } = await this.db
+      .from('agencies')
+      .select('id, name, city, country, phone, email')
+      .eq('id', profile.agency_id)
+      .maybeSingle(); // Ne plante pas si l'agence est introuvable
+
+    if (!agencyError) {
+      agency = agencyData;
+    }
+  }
+
+  // 4. Retourner le même format que le login pour le frontend
+  return {
+    ...profile,
+    agency: agency
+  };
+}
 
   // ── Déconnexion ───────────────────────────────────────
   async logout(userId: string) {

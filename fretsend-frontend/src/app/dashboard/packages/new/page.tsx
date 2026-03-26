@@ -63,7 +63,7 @@ export default function NewPackagePage() {
     try {
       const res: any = await pkgApi.list({ search: email });
       // Use dedicated endpoint
-      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/check?email=${encodeURIComponent(email)}`, {
+      const resp = await fetch(`https://fretsend.onrender.com/api/v1/users/check?email=${encodeURIComponent(email)}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('fs_access')}` },
       });
       const data = await resp.json();
@@ -419,18 +419,6 @@ export default function NewPackagePage() {
                 <span className="text-2xl font-black text-[#1C4AA6]">{formatPrice(calcPrice.price, calcPrice.currency)}</span>
               </div>
             )}
-
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-sm">
-              <p className="font-semibold text-amber-700 mb-1">Actions automatiques après validation :</p>
-              <ul className="text-amber-600 space-y-1 text-xs">
-                <li>✅ Génération du numéro de suivi unique</li>
-                <li>📧 Email à {senderInfo.email} avec lien de paiement</li>
-                {!senderInfo.found && <li>🔑 Création du compte expéditeur (mot de passe envoyé par email)</li>}
-                {!recipientInfo.found && <li>🔑 Création du compte destinataire (infos envoyées par email)</li>}
-                <li>📬 Email au destinataire après confirmation du paiement</li>
-              </ul>
-            </div>
-
             <div className="flex justify-between">
               <button onClick={()=>setStep(4)} className="btn-ghost">← Retour</button>
               <button onClick={handleSubmit} disabled={mutation.isPending} className="btn-primary">

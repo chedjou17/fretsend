@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const WS = process.env.NEXT_PUBLIC_WS_URL || 'https://fretsend.onrender.com/ws';
+const WS = process.env.NEXT_PUBLIC_WS_URL || 'https://fretsend.onrender.com/api/v1';
 let socket: Socket | null = null;
 
 function getSocket() {

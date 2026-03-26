@@ -32,7 +32,11 @@ let AuthController = class AuthController {
     refresh(dto) {
         return this.authService.refresh(dto.refresh_token);
     }
-    getMe(userId) {
+    getMe(user) {
+        const userId = user.sub || user.id;
+        if (!userId) {
+            throw new common_1.UnauthorizedException('ID utilisateur manquant dans le token');
+        }
         return this.authService.getMe(userId);
     }
     logout(userId) {
@@ -81,10 +85,9 @@ __decorate([
     (0, common_1.Get)('me'),
     (0, swagger_1.ApiBearerAuth)('JWT'),
     (0, swagger_1.ApiOperation)({ summary: 'Profil de l\'utilisateur connecté' }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Profil complet avec agence' }),
-    __param(0, (0, index_1.CurrentUser)('id')),
+    __param(0, (0, index_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "getMe", null);
 __decorate([

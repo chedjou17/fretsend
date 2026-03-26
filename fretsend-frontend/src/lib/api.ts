@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://fretsend.onrender.com';
+const BASE = process.env.NEXT_PUBLIC_API_URL || 'https://fretsend.onrender.com/api/v1';
 
 const api: AxiosInstance = axios.create({
   baseURL: BASE,
@@ -11,7 +11,9 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = Cookies.get('fs_access') || (typeof localStorage !== 'undefined' && localStorage.getItem('fs_access'));
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.set('Authorization', `Bearer ${token}`);
+  }
   return config;
 });
 

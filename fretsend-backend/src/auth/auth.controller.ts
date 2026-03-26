@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
@@ -45,16 +45,23 @@ export class AuthController {
   }
 
   // GET /api/v1/auth/me
-  @Get('me')
-  @ApiBearerAuth('JWT')
-  @ApiOperation({ summary: 'Profil de l\'utilisateur connecté' })
-  @ApiResponse({ status: 200, description: 'Profil complet avec agence' })
-  getMe(@CurrentUser('id') userId: string) {
-    return this.authService.getMe(userId);
+// GET /api/v1/auth/me
+@Get('me')
+@ApiBearerAuth('JWT')
+@ApiOperation({ summary: 'Profil de l\'utilisateur connecté' })
+getMe(@CurrentUser() user: any) {
+  // On récupère l'ID soit dans 'sub' (standard JWT), soit dans 'id'
+  const userId = user.sub || user.id; 
+  
+  if (!userId) {
+    throw new UnauthorizedException('ID utilisateur manquant dans le token');
   }
+  
+  return this.authService.getMe(userId);
+}
 
   // POST /api/v1/auth/logout
-  @Post('logout')
+  @Post('logout') 
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Déconnexion — révoque la session' })

@@ -25,7 +25,7 @@ export declare class AuthController {
         access_token: string;
         refresh_token: string;
     }>;
-    getMe(userId: string): Promise<any>;
+    getMe(user: any): Promise<any>;
     logout(userId: string): Promise<{
         message: string;
     }>;

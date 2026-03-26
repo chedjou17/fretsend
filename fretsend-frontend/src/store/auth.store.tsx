@@ -23,16 +23,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile|null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = Cookies.get('fs_access') || localStorage.getItem('fs_access');
-    if (token) {
-      authApi.me()
-        .then((d: any) => setProfile(d))
-        .catch(() => clear())
-        .finally(() => setLoading(false));
-    } else setLoading(false);
-  }, []);
-
+useEffect(() => {
+  const token = Cookies.get('fs_access') || localStorage.getItem('fs_access');
+  if (token) {
+    authApi.me()
+      .then((d: any) => setProfile(d))
+      .catch((err) => {
+         // L'intercepteur Axios gère déjà le cas 401 et la redirection.
+         console.error('Erreur de récupération du profil:', err);
+      })
+      .finally(() => setLoading(false));
+  } else setLoading(false);
+}, []);
   function clear() {
     Cookies.remove('fs_access'); Cookies.remove('fs_refresh');
     localStorage.removeItem('fs_access'); localStorage.removeItem('fs_refresh');
@@ -47,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('fs_access',  access_token);
     localStorage.setItem('fs_refresh', refresh_token);
     setProfile(p);
+    console.log(d)
   }
 
   async function logout() { try { await authApi.logout(); } catch {} clear(); }
